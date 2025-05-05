@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Industrial Clicker</title>
+    <title>Звёздный Кликер</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -13,123 +13,110 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Orbitron', sans-serif;
-            background-color: #0a0a0a;
+            font-family: 'Arial', sans-serif;
+            background-color: #000;
+            color: #ffe81f;
             background-image: 
-                radial-gradient(circle at 20% 30%, rgba(200, 0, 0, 0.15) 0%, transparent 25%),
-                linear-gradient(to bottom, rgba(10, 10, 10, 0.9), rgba(30, 0, 0, 0.9));
-            color: #e00;
+                radial-gradient(circle at 20% 30%, rgba(0, 40, 100, 0.8) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(100, 0, 40, 0.8) 0%, transparent 30%);
             overflow: hidden;
         }
         
-        .clicker-container {
-            position: relative;
-            width: 300px;
-            padding: 40px;
-            border: 3px solid #500;
-            border-radius: 2px;
-            background-color: rgba(20, 20, 20, 0.8);
-            box-shadow: 
-                0 0 30px rgba(200, 0, 0, 0.5),
-                inset 0 0 20px rgba(0, 0, 0, 0.7);
+        .clicker {
             text-align: center;
+            position: relative;
+            z-index: 2;
         }
         
         .counter {
-            font-size: 64px;
-            margin: 30px 0;
-            font-weight: bold;
-            text-shadow: 0 0 10px #e00;
-            letter-spacing: 3px;
-            position: relative;
-        }
-        
-        .counter::after {
-            content: "SYSTEM ONLINE";
-            position: absolute;
-            bottom: -25px;
-            left: 0;
-            width: 100%;
-            font-size: 12px;
-            color: #777;
+            font-size: 60px;
+            margin-bottom: 30px;
+            font-family: 'Arial Black', sans-serif;
+            text-shadow: 0 0 10px #ffe81f, 0 0 20px #ff5e00;
             letter-spacing: 2px;
         }
         
         .click-button {
             padding: 15px 40px;
             font-size: 20px;
-            background: linear-gradient(to bottom, #300, #100);
-            color: #e00;
-            border: 2px solid #500;
+            background: linear-gradient(to bottom, #333, #111);
+            color: #ffe81f;
+            border: 2px solid #ffe81f;
             border-radius: 0;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             transition: all 0.3s;
-            font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 5px #e00;
             position: relative;
             overflow: hidden;
         }
         
         .click-button:hover {
-            background: linear-gradient(to bottom, #400, #200);
-            box-shadow: 0 0 20px rgba(200, 0, 0, 0.7);
+            background: linear-gradient(to bottom, #444, #222);
+            box-shadow: 0 0 15px #ffe81f;
         }
         
         .click-button:active {
             transform: translateY(2px);
-            background: linear-gradient(to bottom, #200, #000);
         }
         
-        .gear {
+        .click-button::before {
+            content: '';
             position: absolute;
-            width: 60px;
-            height: 60px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 15L54 25H46L50 15ZM25 46L15 50L25 54V46ZM50 85L46 75H54L50 85ZM75 54L85 50L75 46V54ZM28 28L35 35L28 28ZM65 35L72 28L65 35ZM72 72L65 65L72 72ZM35 65L28 72L35 65Z" fill="%23500"/></svg>');
-            opacity: 0.3;
-            animation: rotate linear infinite;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 45%,
+                rgba(255, 232, 31, 0.3) 50%,
+                transparent 55%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
         }
         
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
         }
         
-        .scanlines {
+        .star {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(
-                    rgba(200, 0, 0, 0.1) 1px, 
-                    transparent 1px
-                );
-            background-size: 100% 3px;
-            pointer-events: none;
-            animation: scan 8s linear infinite;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
         }
         
-        @keyframes scan {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100%; }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="clicker-container">
-        <div class="scanlines"></div>
-        <div id="gear1" class="gear" style="top: 10px; left: 10px; animation-duration: 20s;"></div>
-        <div id="gear2" class="gear" style="bottom: 10px; right: 10px; animation-duration: 25s;"></div>
-        
+    <div class="clicker">
         <div class="counter" id="clickCount">0</div>
-        <button class="click-button" id="clickButton">АКТИВИРОВАТЬ</button>
+        <button class="click-button" id="clickButton">КЛИКНУТЬ</button>
     </div>
 
     <script>
+        // Создаём звёзды на фоне
+        function createStars() {
+            const count = 100;
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = `${Math.random() * 3 + 1}px`;
+                star.style.height = star.style.width;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.setProperty('--duration', `${Math.random() * 5 + 3}s`);
+                document.body.appendChild(star);
+            }
+        }
+        
         const tg = window.Telegram.WebApp;
         let clickCounter = 0;
         let isDataLoaded = false;
@@ -137,23 +124,7 @@
         // Инициализация
         tg.ready();
         tg.expand();
-        
-        // Создаем шестерёнки
-        function createGears() {
-            const gears = [
-                { id: 'gear1', size: 60, speed: 20 },
-                { id: 'gear2', size: 70, speed: -25 },
-                { id: 'gear3', size: 50, speed: 15 }
-            ];
-            
-            gears.forEach(gear => {
-                const el = document.getElementById(gear.id);
-                el.style.width = `${gear.size}px`;
-                el.style.height = `${gear.size}px`;
-                el.style.animationDuration = `${Math.abs(gear.speed)}s`;
-                el.style.animationDirection = gear.speed > 0 ? 'normal' : 'reverse';
-            });
-        }
+        createStars();
         
         // Загрузка сохранённых данных
         function loadCounter() {
@@ -165,8 +136,6 @@
                 isDataLoaded = true;
             });
         }
-        
-        createGears();
         loadCounter();
 
         // Обработчик клика
@@ -178,27 +147,16 @@
             saveCounter();
             
             // Эффект при клике
-            const container = document.querySelector('.clicker-container');
-            container.style.boxShadow = '0 0 40px rgba(200, 0, 0, 0.8)';
+            const btn = document.getElementById('clickButton');
+            btn.style.boxShadow = '0 0 25px #ffe81f';
             setTimeout(() => {
-                container.style.boxShadow = '0 0 30px rgba(200, 0, 0, 0.5)';
-            }, 300);
+                btn.style.boxShadow = 'none';
+            }, 200);
         });
 
         // Обновление отображения счётчика
         function updateCounterDisplay() {
-            const counter = document.getElementById('clickCount');
-            counter.textContent = clickCounter;
-            
-            // Эффект перегрузки каждые 5 кликов
-            if (clickCounter % 5 === 0) {
-                counter.style.transform = 'scale(1.2)';
-                counter.style.color = '#f00';
-                setTimeout(() => {
-                    counter.style.transform = 'scale(1)';
-                    counter.style.color = '#e00';
-                }, 300);
-            }
+            document.getElementById('clickCount').textContent = clickCounter;
         }
 
         // Сохранение счётчика
