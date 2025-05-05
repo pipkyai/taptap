@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Звёздный Кликер</title>
+    <title>Волновой Кликер</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -14,106 +14,125 @@
             justify-content: center;
             align-items: center;
             font-family: 'Arial', sans-serif;
-            background-color: #000;
-            color: #ffe81f;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(0, 40, 100, 0.8) 0%, transparent 30%),
-                radial-gradient(circle at 80% 70%, rgba(100, 0, 40, 0.8) 0%, transparent 30%);
+            background-color: #e8e1d1;
+            color: #2a3439;
             overflow: hidden;
+            position: relative;
+        }
+        
+        .wave-bg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%232a3439"></path><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%232a3439"></path><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%232a3439"></path></svg>');
+            background-size: cover;
+            z-index: 1;
         }
         
         .clicker {
             text-align: center;
             position: relative;
             z-index: 2;
+            padding: 20px;
+            background-color: rgba(232, 225, 209, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(42, 52, 57, 0.2);
         }
         
         .counter {
             font-size: 60px;
             margin-bottom: 30px;
-            font-family: 'Arial Black', sans-serif;
-            text-shadow: 0 0 10px #ffe81f, 0 0 20px #ff5e00;
+            font-family: 'Noto Sans JP', sans-serif;
             letter-spacing: 2px;
+            color: #2a3439;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
         }
         
         .click-button {
             padding: 15px 40px;
             font-size: 20px;
-            background: linear-gradient(to bottom, #333, #111);
-            color: #ffe81f;
-            border: 2px solid #ffe81f;
-            border-radius: 0;
+            background: linear-gradient(to bottom, #d4c8a6, #b8a88a);
+            color: #2a3439;
+            border: 2px solid #2a3439;
+            border-radius: 4px;
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            transition: all 0.3s;
+            letter-spacing: 2px;
+            transition: all 0.1s;
             position: relative;
             overflow: hidden;
+            transform: translateY(0);
+            touch-action: manipulation;
+            font-family: 'Noto Sans JP', sans-serif;
+            box-shadow: 0 4px 8px rgba(42, 52, 57, 0.2);
         }
         
         .click-button:hover {
-            background: linear-gradient(to bottom, #444, #222);
-            box-shadow: 0 0 15px #ffe81f;
+            background: linear-gradient(to bottom, #e0d6b8, #c4b494);
+            box-shadow: 0 6px 12px rgba(42, 52, 57, 0.3);
         }
         
         .click-button:active {
             transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(42, 52, 57, 0.3);
         }
         
-        .click-button::before {
-            content: '';
+        .mount-fuji {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to bottom right,
-                transparent 45%,
-                rgba(255, 232, 31, 0.3) 50%,
-                transparent 55%
-            );
-            transform: rotate(30deg);
-            animation: shine 3s infinite;
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 150px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 0 L100 100 L0 100 Z" fill="%23d4c8a6" stroke="%232a3439" stroke-width="0.5"/></svg>') no-repeat;
+            background-size: contain;
+            opacity: 0.7;
+            z-index: 0;
         }
         
-        @keyframes shine {
-            0% { transform: translateX(-100%) rotate(30deg); }
-            100% { transform: translateX(100%) rotate(30deg); }
-        }
-        
-        .star {
+        .sakura {
             position: absolute;
-            background-color: white;
-            border-radius: 50%;
-            animation: twinkle var(--duration) infinite ease-in-out;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 0 C60 20, 80 20, 80 40 C100 40, 100 60, 80 60 C80 80, 60 80, 50 100 C40 80, 20 80, 20 60 C0 60, 0 40, 20 40 C20 20, 40 20, 50 0" fill="%23e8b5b5" stroke="%23d48a8a" stroke-width="0.5"/></svg>') no-repeat;
+            background-size: contain;
+            animation: falling linear infinite;
+            z-index: 1;
         }
         
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 1; }
+        @keyframes falling {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="wave-bg"></div>
+    <div class="mount-fuji"></div>
     <div class="clicker">
         <div class="counter" id="clickCount">0</div>
-        <button class="click-button" id="clickButton">КЛИКНУТЬ</button>
+        <button class="click-button" id="clickButton">クリック</button>
     </div>
 
     <script>
-        // Создаём звёзды на фоне
-        function createStars() {
-            const count = 100;
+        // Создаём падающие лепестки сакуры
+        function createSakura() {
+            const count = 15;
             for (let i = 0; i < count; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.width = `${Math.random() * 3 + 1}px`;
-                star.style.height = star.style.width;
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.setProperty('--duration', `${Math.random() * 5 + 3}s`);
-                document.body.appendChild(star);
+                const petal = document.createElement('div');
+                petal.className = 'sakura';
+                petal.style.width = `${Math.random() * 20 + 10}px`;
+                petal.style.height = petal.style.width;
+                petal.style.left = `${Math.random() * 100}%`;
+                petal.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                petal.style.animationDelay = `${Math.random() * 5}s`;
+                document.body.appendChild(petal);
             }
         }
         
@@ -124,7 +143,7 @@
         // Инициализация
         tg.ready();
         tg.expand();
-        createStars();
+        createSakura();
         
         // Загрузка сохранённых данных
         function loadCounter() {
@@ -139,7 +158,8 @@
         loadCounter();
 
         // Обработчик клика
-        document.getElementById('clickButton').addEventListener('click', () => {
+        const clickButton = document.getElementById('clickButton');
+        clickButton.addEventListener('click', () => {
             if (!isDataLoaded) return;
             
             clickCounter++;
@@ -147,12 +167,22 @@
             saveCounter();
             
             // Эффект при клике
-            const btn = document.getElementById('clickButton');
-            btn.style.boxShadow = '0 0 25px #ffe81f';
+            clickButton.style.boxShadow = '0 2px 4px rgba(42, 52, 57, 0.5)';
             setTimeout(() => {
-                btn.style.boxShadow = 'none';
+                clickButton.style.boxShadow = '0 4px 8px rgba(42, 52, 57, 0.2)';
             }, 200);
         });
+
+        // Предотвращаем залипание кнопки на мобильных устройствах
+        clickButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            clickButton.classList.add('active');
+        }, {passive: false});
+
+        clickButton.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            clickButton.classList.remove('active');
+        }, {passive: false});
 
         // Обновление отображения счётчика
         function updateCounterDisplay() {
