@@ -1,205 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Аниме Чиби Счётчик</title>
+    <title>Минималистичный Кликер</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            padding: 0;
             margin: 0;
+            padding: 0;
             height: 100vh;
-            background-color: #fff0f5;
-            background-image: linear-gradient(to bottom, #ffebf3, #ffd6e7);
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #5a2d69;
-            overflow: hidden;
-            position: relative;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
         }
-        
-        .container {
-            background-color: rgba(255, 240, 245, 0.85);
-            border-radius: 20px;
-            padding: 30px;
-            width: 85%;
-            max-width: 350px;
-            box-shadow: 0 0 25px rgba(255, 105, 180, 0.3);
-            border: 3px solid #ff69b4;
-            position: relative;
-            z-index: 10;
+        .clicker {
+            text-align: center;
         }
-        
-        h1 {
-            color: #d23369;
-            text-shadow: 2px 2px 4px rgba(210, 51, 105, 0.2);
-            font-size: 24px;
-            margin-bottom: 15px;
+        .counter {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #333;
         }
-        
-        .counter-display {
-            font-size: 42px;
-            font-weight: bold;
-            margin: 25px 0;
-            color: #ff1493;
-            text-shadow: 2px 2px 4px rgba(255, 20, 147, 0.2);
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 15px;
-            border-radius: 15px;
-            border: 2px solid #ff85a2;
-        }
-        
         .click-button {
             padding: 15px 30px;
-            background: linear-gradient(145deg, #ff85a2, #ff1493);
+            font-size: 18px;
+            background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 50px;
+            border-radius: 4px;
             cursor: pointer;
-            margin: 15px auto;
-            font-size: 20px;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
-            transition: all 0.3s;
-            display: block;
-            width: 80%;
-        }
-        
-        .click-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 20, 147, 0.4);
-            background: linear-gradient(145deg, #ff1493, #ff85a2);
-        }
-        
-        .click-button:active {
-            transform: translateY(1px);
-            box-shadow: 0 3px 10px rgba(255, 20, 147, 0.3);
-        }
-        
-        .main-character {
-            width: 120px;
-            margin: 0 auto 20px;
-            transition: all 0.3s;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .hearts {
-            position: absolute;
-            pointer-events: none;
-            opacity: 0;
-            z-index: 5;
-        }
-        
-        .chibi-character {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            z-index: 1;
-            bottom: 0;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(5deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
-        }
-        
-        @keyframes jump {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-100px) scale(1.1); }
-        }
-        
-        @keyframes walk {
-            0% { left: -50px; }
-            100% { left: calc(100% + 50px); }
-        }
-        
-        .floating {
-            animation: float 4s ease-in-out infinite;
-        }
-        
-        .jumping {
-            animation: jump 2s ease-in-out infinite;
-        }
-        
-        .walking {
-            animation: walk linear infinite;
-        }
-        
-        @keyframes heart-fly {
-            0% { transform: translateY(0) scale(0.5); opacity: 1; }
-            100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Чиби Счётчик Kawaii~ ★</h1>
-        
-        <div class="main-character floating">
-            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="40" r="30" fill="#ffcdd2"/>
-                <circle cx="38" cy="35" r="4" fill="#5a2d69"/>
-                <circle cx="62" cy="35" r="4" fill="#5a2d69"/>
-                <path d="M40 50 Q50 60 60 50" stroke="#5a2d69" stroke-width="2" fill="none"/>
-                <path d="M35 70 Q50 85 65 70" stroke="#ff1493" stroke-width="2" fill="none"/>
-            </svg>
-        </div>
-        
-        <div class="counter-display">
-            <span id="clickCount">0</span>
-        </div>
-        
-        <button class="click-button" id="clickButton">Покликай! (≧◡≦)</button>
+    <div class="clicker">
+        <div class="counter" id="clickCount">0</div>
+        <button class="click-button" id="clickButton">Кликнуть</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         let clickCounter = 0;
         let isDataLoaded = false;
-        const chibiCharacters = [];
-        const characterImages = [
-            'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="40" r="30" fill="%23ffb6c1"/><circle cx="40" cy="35" r="5" fill="%235a2d69"/><circle cx="60" cy="35" r="5" fill="%235a2d69"/><path d="M45 55 Q50 60 55 55" stroke="%235a2d69" stroke-width="2" fill="none"/></svg>',
-            'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="40" r="30" fill="%23ffccf9"/><circle cx="40" cy="35" r="5" fill="%235a2d69"/><circle cx="60" cy="35" r="5" fill="%235a2d69"/><path d="M45 50 Q50 60 55 50" stroke="%235a2d69" stroke-width="2" fill="none"/></svg>',
-            'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="40" r="30" fill="%23b5e8ff"/><circle cx="40" cy="35" r="5" fill="%235a2d69"/><circle cx="60" cy="35" r="5" fill="%235a2d69"/><path d="M45 55 Q50 60 55 55" stroke="%235a2d69" stroke-width="2" fill="none"/></svg>'
-        ];
 
         // Инициализация
         tg.ready();
         tg.expand();
-        
-        // Создаем чиби-персонажей
-        function createChibiCharacters() {
-            for (let i = 0; i < 5; i++) {
-                const chibi = document.createElement('div');
-                chibi.className = 'chibi-character';
-                chibi.style.backgroundImage = `url('${characterImages[i % characterImages.length]}')`;
-                chibi.style.left = `${Math.random() * 100}%`;
-                chibi.style.bottom = '0';
-                chibi.style.animationDuration = `${Math.random() * 10 + 10}s`;
-                chibi.style.animationDelay = `${Math.random() * 5}s`;
-                chibi.style.animationName = 'walk';
-                chibi.style.opacity = '0.8';
-                
-                // Добавляем прыжки
-                const jumpInterval = setInterval(() => {
-                    chibi.style.animationName = 'jump';
-                    setTimeout(() => {
-                        chibi.style.animationName = 'walk';
-                    }, 2000);
-                }, Math.random() * 3000 + 2000);
-                
-                document.body.appendChild(chibi);
-                chibiCharacters.push({element: chibi, interval: jumpInterval});
-            }
-        }
         
         // Загрузка сохранённых данных
         function loadCounter() {
@@ -211,9 +60,7 @@
                 isDataLoaded = true;
             });
         }
-        
         loadCounter();
-        createChibiCharacters();
 
         // Обработчик клика
         document.getElementById('clickButton').addEventListener('click', () => {
@@ -222,55 +69,18 @@
             clickCounter++;
             updateCounterDisplay();
             saveCounter();
-            
-            // Анимация при клике
-            createHearts();
-            document.querySelector('.main-character').style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                document.querySelector('.main-character').style.transform = 'scale(1)';
-            }, 200);
-            
-            // Заставляем чиби подпрыгнуть при клике
-            chibiCharacters.forEach(chibi => {
-                chibi.element.style.animationName = 'jump';
-                setTimeout(() => {
-                    chibi.element.style.animationName = 'walk';
-                }, 2000);
-            });
         });
 
-        // Вспомогательные функции
+        // Обновление отображения счётчика
         function updateCounterDisplay() {
-            const counterElement = document.getElementById('clickCount');
-            counterElement.textContent = clickCounter;
-            
-            // Динамическое изменение цвета
-            const hue = (clickCounter * 3) % 360;
-            counterElement.style.color = `hsl(${hue}, 100%, 60%)`;
-            counterElement.style.textShadow = `0 0 10px hsla(${hue}, 100%, 70%, 0.7)`;
+            document.getElementById('clickCount').textContent = clickCounter;
         }
 
+        // Сохранение счётчика
         function saveCounter() {
             tg.CloudStorage.setItem('clickCount', clickCounter.toString(), (error) => {
                 if (error) console.error("Ошибка сохранения:", error);
             });
-        }
-
-        function createHearts() {
-            for (let i = 0; i < 8; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'hearts';
-                heart.innerHTML = ['❤️', '💖', '💗', '💓'][Math.floor(Math.random() * 4)];
-                heart.style.left = `${50 + (Math.random() * 40 - 20)}%`;
-                heart.style.top = '60%';
-                heart.style.fontSize = `${Math.random() * 20 + 15}px`;
-                document.body.appendChild(heart);
-                
-                setTimeout(() => {
-                    heart.style.animation = 'heart-fly 1s forwards';
-                    setTimeout(() => heart.remove(), 1000);
-                }, 0);
-            }
         }
     </script>
 </body>
