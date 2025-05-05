@@ -31,45 +31,55 @@
 <body>
     <h1>Счетчик кликов</h1>
     <div class="counter">Кликов: <span id="clickCount">0</span></div>
-    <button onclick="incrementCounter()">Кликнуть</button>
-    <button onclick="resetCounter()">Сбросить</button>
+    <button id="clickButton">Кликнуть</button>
+    <button id="resetButton">Сбросить</button>
 
     <script>
         const tg = window.Telegram.WebApp;
-        let clickCounter = 0;
+        let clickCounter = 0; // Начальное значение счетчика
 
-        // Инициализация при загрузке
+        // Инициализация приложения
         tg.ready();
         tg.expand();
-        
-        // Загружаем сохраненное значение
-        tg.CloudStorage.getItem('clickCount', (error, value) => {
-            if (!error && value) {
-                clickCounter = parseInt(value) || 0;
+        tg.MainButton.show().setText("Закрыть").onClick(() => tg.close());
+
+        // Загружаем сохраненное значение из CloudStorage
+        tg.CloudStorage.getItem('clickCount', (error, savedValue) => {
+            if (!error && savedValue) {
+                clickCounter = parseInt(savedValue) || 0;
+                updateCounterDisplay();
             }
-            document.getElementById('clickCount").textContent = clickCounter;
         });
 
-        // Кнопка закрытия
-        tg.MainButton.show().setText("Закрыть").onClick(() => tg.close());
+        // Назначаем обработчики кнопок
+        document.getElementById('clickButton').addEventListener('click', incrementCounter);
+        document.getElementById('resetButton').addEventListener('click', resetCounter);
 
         // Увеличиваем счетчик
         function incrementCounter() {
             clickCounter++;
-            updateCounter();
+            updateCounterDisplay();
+            saveCounter();
         }
 
         // Сбрасываем счетчик
         function resetCounter() {
             clickCounter = 0;
-            updateCounter();
+            updateCounterDisplay();
+            saveCounter();
         }
 
-        // Обновляем отображение и сохраняем
-        function updateCounter() {
-            document.getElementById('clickCount").textContent = clickCounter;
+        // Обновляем число на экране
+        function updateCounterDisplay() {
+            document.getElementById('clickCount').textContent = clickCounter;
+        }
+
+        // Сохраняем в CloudStorage
+        function saveCounter() {
             tg.CloudStorage.setItem('clickCount', clickCounter.toString(), (error) => {
-                if (error) console.error("Ошибка сохранения:", error);
+                if (error) {
+                    console.error("Ошибка сохранения:", error);
+                }
             });
         }
     </script>
