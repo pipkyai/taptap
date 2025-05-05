@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Звёздный Кликер</title>
+    <title>Звёздный Кликер: Световые Мечи</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -20,6 +20,7 @@
                 radial-gradient(circle at 20% 30%, rgba(0, 40, 100, 0.8) 0%, transparent 30%),
                 radial-gradient(circle at 80% 70%, rgba(100, 0, 40, 0.8) 0%, transparent 30%);
             overflow: hidden;
+            perspective: 1000px;
         }
         
         .clicker {
@@ -34,6 +35,7 @@
             font-family: 'Arial Black', sans-serif;
             text-shadow: 0 0 10px #ffe81f, 0 0 20px #ff5e00;
             letter-spacing: 2px;
+            transition: transform 0.3s;
         }
         
         .click-button {
@@ -49,6 +51,7 @@
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+            z-index: 3;
         }
         
         .click-button:hover {
@@ -57,7 +60,7 @@
         }
         
         .click-button:active {
-            transform: translateY(2px);
+            transform: translateY(2px) scale(0.98);
         }
         
         .click-button::before {
@@ -93,6 +96,59 @@
             0%, 100% { opacity: 0.2; }
             50% { opacity: 1; }
         }
+        
+        /* Новые стили для световых мечей и эффектов */
+        .lightsaber {
+            position: absolute;
+            width: 8px;
+            height: 0;
+            background: #ffe81f;
+            box-shadow: 0 0 10px #ffe81f, 0 0 20px #ff5e00;
+            transform-origin: center bottom;
+            z-index: 1;
+            transition: height 0.5s ease-out;
+        }
+        
+        .saber-hilt {
+            position: absolute;
+            width: 15px;
+            height: 60px;
+            background: linear-gradient(to bottom, #888, #333);
+            border-radius: 3px;
+            z-index: 2;
+        }
+        
+        .explosion {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,232,31,0.8) 0%, rgba(255,94,0,0) 70%);
+            transform: scale(0);
+            opacity: 0;
+            z-index: 4;
+        }
+        
+        .force-circle {
+            position: absolute;
+            border: 2px solid rgba(255,232,31,0.5);
+            border-radius: 50%;
+            transform: scale(0);
+            opacity: 0;
+        }
+        
+        .combo-notification {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            font-size: 24px;
+            color: #ff5e00;
+            text-shadow: 0 0 10px #ffe81f;
+            font-weight: bold;
+            opacity: 0;
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
@@ -104,11 +160,11 @@
     <script>
         // Создаём звёзды на фоне
         function createStars() {
-            const count = 100;
+            const count = 200;
             for (let i = 0; i < count; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                star.style.width = `${Math.random() * 3 + 1}px`;
+                star.style.width = `${Math.random() * 4 + 1}px`;
                 star.style.height = star.style.width;
                 star.style.left = `${Math.random() * 100}%`;
                 star.style.top = `${Math.random() * 100}%`;
@@ -117,14 +173,127 @@
             }
         }
         
+        // Создаем световые мечи по краям экрана
+        function createLightsabers() {
+            const colors = ['#ffe81f', '#00b4ff', '#ff00b4', '#00ffb4'];
+            const positions = [
+                { left: '10%', top: '0%', angle: 45 },
+                { left: '90%', top: '0%', angle: 135 },
+                { left: '10%', top: '100%', angle: -45 },
+                { left: '90%', top: '100%', angle: -135 }
+            ];
+            
+            positions.forEach((pos, index) => {
+                const saber = document.createElement('div');
+                saber.className = 'lightsaber';
+                saber.style.left = pos.left;
+                saber.style.top = pos.top;
+                saber.style.transform = `rotate(${pos.angle}deg)`;
+                saber.style.background = colors[index % colors.length];
+                saber.style.boxShadow = `0 0 10px ${colors[index % colors.length]}, 0 0 20px ${colors[index % colors.length]}`;
+                
+                const hilt = document.createElement('div');
+                hilt.className = 'saber-hilt';
+                hilt.style.left = pos.left;
+                hilt.style.top = pos.top;
+                hilt.style.transform = `translate(-50%, -100%) rotate(${pos.angle}deg)`;
+                
+                document.body.appendChild(saber);
+                document.body.appendChild(hilt);
+                
+                // Анимация включения мечей
+                setTimeout(() => {
+                    saber.style.height = '200px';
+                }, index * 300 + 500);
+            });
+        }
+        
+        // Эффект взрыва при клике
+        function createExplosion(x, y) {
+            const explosion = document.createElement('div');
+            explosion.className = 'explosion';
+            explosion.style.left = `${x - 15}px`;
+            explosion.style.top = `${y - 15}px`;
+            
+            document.body.appendChild(explosion);
+            
+            setTimeout(() => {
+                explosion.style.transform = 'scale(3)';
+                explosion.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                explosion.style.transform = 'scale(5)';
+                explosion.style.opacity = '0';
+            }, 100);
+            
+            setTimeout(() => {
+                explosion.remove();
+            }, 1000);
+        }
+        
+        // Эффект силового круга
+        function createForceCircle(x, y, size) {
+            const circle = document.createElement('div');
+            circle.className = 'force-circle';
+            circle.style.left = `${x - size/2}px`;
+            circle.style.top = `${y - size/2}px`;
+            circle.style.width = `${size}px`;
+            circle.style.height = `${size}px`;
+            circle.style.borderColor = `rgba(255,232,31,${0.8 - size/500})`;
+            
+            document.body.appendChild(circle);
+            
+            setTimeout(() => {
+                circle.style.transform = 'scale(1)';
+                circle.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                circle.style.transform = 'scale(3)';
+                circle.style.opacity = '0';
+            }, 500);
+            
+            setTimeout(() => {
+                circle.remove();
+            }, 1000);
+        }
+        
+        // Показ комбо-уведомления
+        function showComboNotification(text) {
+            const notification = document.createElement('div');
+            notification.className = 'combo-notification';
+            notification.textContent = text;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(-50%) scale(1)';
+                notification.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(-50%) scale(1.2)';
+                notification.style.opacity = '0';
+            }, 1000);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 1500);
+        }
+        
         const tg = window.Telegram.WebApp;
         let clickCounter = 0;
         let isDataLoaded = false;
+        let combo = 0;
+        let lastClickTime = 0;
+        let comboTimeout;
 
         // Инициализация
         tg.ready();
         tg.expand();
         createStars();
+        createLightsabers();
         
         // Загрузка сохранённых данных
         function loadCounter() {
@@ -139,7 +308,7 @@
         loadCounter();
 
         // Обработчик клика
-        document.getElementById('clickButton').addEventListener('click', () => {
+        document.getElementById('clickButton').addEventListener('click', (e) => {
             if (!isDataLoaded) return;
             
             clickCounter++;
@@ -152,6 +321,40 @@
             setTimeout(() => {
                 btn.style.boxShadow = 'none';
             }, 200);
+            
+            // Создаем эффекты
+            const rect = btn.getBoundingClientRect();
+            const x = rect.left + rect.width/2;
+            const y = rect.top + rect.height/2;
+            
+            createExplosion(x, y);
+            createForceCircle(x, y, 50);
+            
+            // Анимация счетчика
+            const counter = document.getElementById('clickCount');
+            counter.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                counter.style.transform = 'scale(1)';
+            }, 200);
+            
+            // Система комбо
+            const now = Date.now();
+            if (now - lastClickTime < 300) {
+                combo++;
+                clearTimeout(comboTimeout);
+                
+                if (combo % 5 === 0) {
+                    createForceCircle(x, y, 100);
+                    showComboNotification(`COMBO x${combo}!`);
+                }
+            } else {
+                combo = 0;
+            }
+            
+            lastClickTime = now;
+            comboTimeout = setTimeout(() => {
+                combo = 0;
+            }, 500);
         });
 
         // Обновление отображения счётчика
@@ -165,6 +368,15 @@
                 if (error) console.error("Ошибка сохранения:", error);
             });
         }
+        
+        // Дополнительные эффекты при загрузке
+        setTimeout(() => {
+            const counter = document.getElementById('clickCount');
+            counter.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                counter.style.transform = 'scale(1)';
+            }, 300);
+        }, 1000);
     </script>
 </body>
 </html>
