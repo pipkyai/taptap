@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Аниме Счётчик Кликов</title>
+    <title>Аниме Счётчик</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -9,128 +9,123 @@
         body {
             font-family: 'Arial', sans-serif;
             text-align: center;
-            padding: 20px;
-            background-color: #ffebf3;
-            background-image: url('https://i.imgur.com/X6QX0yT.png');
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            background-color: #fff0f5;
+            background-image: url('https://i.imgur.com/JVzRcBg.png');
             background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             color: #5a2d69;
+            overflow: hidden;
         }
         
         .container {
-            background-color: rgba(255, 255, 255, 0.85);
-            border-radius: 15px;
-            padding: 25px;
-            max-width: 400px;
-            margin: 0 auto;
-            box-shadow: 0 0 20px rgba(234, 76, 137, 0.4);
-            border: 2px solid #ff4d88;
+            background-color: rgba(255, 240, 245, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            width: 85%;
+            max-width: 350px;
+            box-shadow: 0 0 25px rgba(255, 105, 180, 0.3);
+            border: 3px solid #ff69b4;
+            position: relative;
         }
         
         h1 {
             color: #d23369;
-            text-shadow: 2px 2px 4px rgba(210, 51, 105, 0.3);
-            font-size: 28px;
-            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(210, 51, 105, 0.2);
+            font-size: 24px;
+            margin-bottom: 15px;
         }
         
         .counter-display {
-            font-size: 36px;
+            font-size: 42px;
             font-weight: bold;
-            margin: 20px 0;
-            color: #9c27b0;
-            text-shadow: 1px 1px 3px rgba(156, 39, 176, 0.3);
-            background-color: rgba(255, 228, 241, 0.7);
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px dashed #ff80ab;
+            margin: 25px 0;
+            color: #ff1493;
+            text-shadow: 2px 2px 4px rgba(255, 20, 147, 0.2);
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid #ff85a2;
         }
         
         .click-button {
-            padding: 12px 25px;
-            background: linear-gradient(145deg, #ff4081, #c2185b);
+            padding: 15px 30px;
+            background: linear-gradient(145deg, #ff85a2, #ff1493);
             color: white;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            margin: 10px;
-            font-size: 18px;
+            margin: 15px auto;
+            font-size: 20px;
             font-weight: bold;
-            box-shadow: 0 4px 8px rgba(194, 24, 91, 0.3);
+            box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
             transition: all 0.3s;
+            display: block;
+            width: 80%;
         }
         
         .click-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(194, 24, 91, 0.4);
+            box-shadow: 0 8px 20px rgba(255, 20, 147, 0.4);
+            background: linear-gradient(145deg, #ff1493, #ff85a2);
         }
         
         .click-button:active {
             transform: translateY(1px);
-            background: linear-gradient(145deg, #c2185b, #ff4081);
-        }
-        
-        .reset-button {
-            padding: 10px 20px;
-            background: linear-gradient(145deg, #7b1fa2, #4a148c);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            margin: 10px;
-            font-size: 16px;
-            box-shadow: 0 4px 8px rgba(123, 31, 162, 0.3);
-            transition: all 0.3s;
-        }
-        
-        .reset-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(123, 31, 162, 0.4);
+            box-shadow: 0 3px 10px rgba(255, 20, 147, 0.3);
         }
         
         .character {
             width: 120px;
-            margin: 20px auto;
-            transition: all 0.5s;
+            margin: 0 auto 20px;
+            transition: all 0.3s;
         }
         
-        .confetti {
+        .hearts {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #f44336;
+            pointer-events: none;
             opacity: 0;
         }
         
         @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
         }
         
         .floating {
-            animation: float 3s ease-in-out infinite;
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        @keyframes heart-fly {
+            0% { transform: translateY(0) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Аниме Счётчик Кликов ✨</h1>
+        <h1>Твой Аниме Счётчик ❤️</h1>
         
         <div class="character floating">
             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="50" cy="40" r="30" fill="#ffcdd2"/>
-                <circle cx="38" cy="35" r="5" fill="#5a2d69"/>
-                <circle cx="62" cy="35" r="5" fill="#5a2d69"/>
+                <circle cx="38" cy="35" r="4" fill="#5a2d69"/>
+                <circle cx="62" cy="35" r="4" fill="#5a2d69"/>
                 <path d="M40 50 Q50 60 60 50" stroke="#5a2d69" stroke-width="2" fill="none"/>
+                <path d="M35 70 Q50 85 65 70" stroke="#ff1493" stroke-width="2" fill="none"/>
             </svg>
         </div>
         
         <div class="counter-display">
-            Кликов: <span id="clickCount">0</span>
+            <span id="clickCount">0</span>
         </div>
         
-        <button class="click-button" id="clickButton">Клик-Клик!</button>
-        <button class="reset-button" id="resetButton">Обнулить</button>
+        <button class="click-button" id="clickButton">Нажми меня!</button>
     </div>
 
     <script>
@@ -141,10 +136,7 @@
         // Инициализация
         tg.ready();
         tg.expand();
-        tg.MainButton.show()
-            .setText("Закрыть")
-            .onClick(() => saveCounter(() => tg.close()));
-
+        
         // Загрузка сохранённых данных
         function loadCounter() {
             tg.CloudStorage.getItem('clickCount', (error, savedValue) => {
@@ -157,7 +149,7 @@
         }
         loadCounter();
 
-        // Обработчики событий
+        // Обработчик клика
         document.getElementById('clickButton').addEventListener('click', () => {
             if (!isDataLoaded) return;
             
@@ -166,25 +158,11 @@
             saveCounter();
             
             // Анимация при клике
-            createConfetti();
-            document.querySelector('.character').style.transform = 'scale(1.1)';
+            createHearts();
+            document.querySelector('.character').style.transform = 'scale(1.2)';
             setTimeout(() => {
                 document.querySelector('.character').style.transform = 'scale(1)';
             }, 200);
-        });
-
-        document.getElementById('resetButton').addEventListener('click', () => {
-            if (!isDataLoaded) return;
-            
-            clickCounter = 0;
-            updateCounterDisplay();
-            saveCounter();
-            
-            // Анимация сброса
-            document.querySelector('.character').style.transform = 'rotate(360deg)';
-            setTimeout(() => {
-                document.querySelector('.character').style.transform = 'rotate(0deg)';
-            }, 500);
         });
 
         // Вспомогательные функции
@@ -192,37 +170,31 @@
             const counterElement = document.getElementById('clickCount');
             counterElement.textContent = clickCounter;
             
-            // Изменение цвета при увеличении счётчика
-            const hue = (clickCounter * 5) % 360;
-            counterElement.style.color = `hsl(${hue}, 70%, 50%)`;
+            // Динамическое изменение цвета
+            const hue = (clickCounter * 3) % 360;
+            counterElement.style.color = `hsl(${hue}, 100%, 60%)`;
+            counterElement.style.textShadow = `0 0 10px hsla(${hue}, 100%, 70%, 0.7)`;
         }
 
-        function saveCounter(callback) {
+        function saveCounter() {
             tg.CloudStorage.setItem('clickCount', clickCounter.toString(), (error) => {
                 if (error) console.error("Ошибка сохранения:", error);
-                if (callback) callback();
             });
         }
 
-        function createConfetti() {
-            for (let i = 0; i < 20; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = `${Math.random() * 100}%`;
-                confetti.style.top = '20%';
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                confetti.style.width = `${Math.random() * 10 + 5}px`;
-                confetti.style.height = `${Math.random() * 10 + 5}px`;
-                document.body.appendChild(confetti);
+        function createHearts() {
+            for (let i = 0; i < 8; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'hearts';
+                heart.innerHTML = '❤️';
+                heart.style.left = `${50 + (Math.random() * 40 - 20)}%`;
+                heart.style.top = '60%';
+                heart.style.fontSize = `${Math.random() * 20 + 15}px`;
+                document.body.appendChild(heart);
                 
                 setTimeout(() => {
-                    confetti.style.opacity = '1';
-                    confetti.style.transform = `translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 + 100}px) rotate(${Math.random() * 360}deg)`;
-                    confetti.style.transition = `all ${Math.random() * 1 + 0.5}s ease-out`;
-                    
-                    setTimeout(() => {
-                        confetti.remove();
-                    }, 1000);
+                    heart.style.animation = 'heart-fly 1s forwards';
+                    setTimeout(() => heart.remove(), 1000);
                 }, 0);
             }
         }
