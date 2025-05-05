@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Счетчик кликов</title>
+    <title>Надёжный счётчик кликов</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -29,59 +29,72 @@
     </style>
 </head>
 <body>
-    <h1>Счетчик кликов</h1>
+    <h1>Счётчик кликов</h1>
     <div class="counter">Кликов: <span id="clickCount">0</span></div>
     <button id="clickButton">Кликнуть</button>
     <button id="resetButton">Сбросить</button>
 
     <script>
         const tg = window.Telegram.WebApp;
-        let clickCounter = 0; // Начальное значение счетчика
+        let clickCounter = 0;
+        let isDataLoaded = false;
 
-        // Инициализация приложения
+        // ===== 1. ИНИЦИАЛИЗАЦИЯ =====
         tg.ready();
         tg.expand();
-        tg.MainButton.show().setText("Закрыть").onClick(() => tg.close());
+        
+        // Главная кнопка (закрытие с сохранением)
+        tg.MainButton.show()
+            .setText("Закрыть")
+            .onClick(() => {
+                saveCounter(() => tg.close());
+            });
 
-        // Загружаем сохраненное значение из CloudStorage
-        tg.CloudStorage.getItem('clickCount', (error, savedValue) => {
-            if (!error && savedValue) {
-                clickCounter = parseInt(savedValue) || 0;
+        // ===== 2. ЗАГРУЗКА ДАННЫХ =====
+        function loadCounter() {
+            tg.CloudStorage.getItem('clickCount', (error, savedValue) => {
+                if (!error && savedValue !== null) {
+                    clickCounter = parseInt(savedValue) || 0;
+                }
                 updateCounterDisplay();
-            }
-        });
+                isDataLoaded = true;
+            });
+        }
+        loadCounter();
 
-        // Назначаем обработчики кнопок
-        document.getElementById('clickButton').addEventListener('click', incrementCounter);
-        document.getElementById('resetButton').addEventListener('click', resetCounter);
-
-        // Увеличиваем счетчик
-        function incrementCounter() {
+        // ===== 3. ОБРАБОТЧИКИ КЛИКОВ =====
+        document.getElementById('clickButton').addEventListener('click', () => {
+            if (!isDataLoaded) return;
             clickCounter++;
             updateCounterDisplay();
             saveCounter();
-        }
+        });
 
-        // Сбрасываем счетчик
-        function resetCounter() {
+        document.getElementById('resetButton').addEventListener('click', () => {
+            if (!isDataLoaded) return;
             clickCounter = 0;
             updateCounterDisplay();
             saveCounter();
-        }
+        });
 
-        // Обновляем число на экране
+        // ===== 4. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
         function updateCounterDisplay() {
             document.getElementById('clickCount').textContent = clickCounter;
         }
 
-        // Сохраняем в CloudStorage
-        function saveCounter() {
+        function saveCounter(callback) {
             tg.CloudStorage.setItem('clickCount', clickCounter.toString(), (error) => {
-                if (error) {
-                    console.error("Ошибка сохранения:", error);
-                }
+                if (error) console.error("Ошибка сохранения:", error);
+                if (callback) callback();
             });
         }
+
+        // ===== 5. СОХРАНЕНИЕ ПРИ ЗАКРЫТИИ =====
+        tg.onEvent('viewportChanged', (event) => {
+            if (event.isStateStable) {
+                saveCounter();
+            }
+        });
     </script>
 </body>
 </html>
