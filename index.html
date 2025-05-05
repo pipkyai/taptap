@@ -164,6 +164,7 @@
         const tg = window.Telegram.WebApp;
         let clickCounter = 0;
         let isDataLoaded = false;
+        let isProcessingClick = false; // Флаг для предотвращения двойных кликов
 
         // Инициализация
         tg.ready();
@@ -192,8 +193,9 @@
 
         // Универсальная функция обработки клика
         function handleClick() {
-            if (!isDataLoaded) return;
+            if (!isDataLoaded || isProcessingClick) return;
             
+            isProcessingClick = true;
             clickCounter++;
             updateCounterDisplay();
             saveCounter();
@@ -206,6 +208,7 @@
             setTimeout(() => {
                 btn.style.transform = 'translateY(0)';
                 btn.style.boxShadow = '0 4px 10px rgba(42, 52, 57, 0.3)';
+                isProcessingClick = false;
             }, 150);
             
             // Создаём эффект всплеска
@@ -243,10 +246,18 @@
             animation.onfinish = () => ripple.remove();
         }
 
-        // Добавляем обработчики для всех типов устройств
+        // Добавляем обработчики
         const clickButton = document.getElementById('clickButton');
-        clickButton.addEventListener('click', handleClick);
-        clickButton.addEventListener('touchstart', handleClick, {passive: true});
+        
+        // Для мобильных устройств используем только touchstart
+        if ('ontouchstart' in window) {
+            clickButton.addEventListener('touchstart', handleClick, {passive: true});
+            // Отключаем click для мобильных, чтобы избежать двойного срабатывания
+            clickButton.addEventListener('click', (e) => e.preventDefault());
+        } else {
+            // Для десктопов используем click
+            clickButton.addEventListener('click', handleClick);
+        }
         
         // Улучшаем отзывчивость на мобильных устройствах
         clickButton.addEventListener('touchstart', function(e) {
