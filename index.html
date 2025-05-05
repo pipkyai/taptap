@@ -13,7 +13,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Arial', sans-serif;
             background-color: #e8e1d1;
             color: #2a3439;
             overflow: hidden;
@@ -35,47 +34,70 @@
             text-align: center;
             position: relative;
             z-index: 2;
-            padding: 20px;
-            background-color: rgba(232, 225, 209, 0.8);
+            padding: 30px;
+            background-color: rgba(232, 225, 209, 0.85);
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(42, 52, 57, 0.2);
+            box-shadow: 0 4px 20px rgba(42, 52, 57, 0.25);
+            border: 1px solid rgba(42, 52, 57, 0.1);
         }
         
         .counter {
-            font-size: 60px;
+            font-size: 64px;
             margin-bottom: 30px;
-            font-family: 'Noto Sans JP', sans-serif;
-            letter-spacing: 2px;
+            font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            letter-spacing: 1px;
             color: #2a3439;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            font-weight: 700;
         }
         
         .click-button {
-            padding: 15px 40px;
-            font-size: 20px;
+            padding: 18px 45px;
+            font-size: 28px;
             background: linear-gradient(to bottom, #d4c8a6, #b8a88a);
             color: #2a3439;
             border: 2px solid #2a3439;
             border-radius: 4px;
             cursor: pointer;
-            letter-spacing: 2px;
-            transition: all 0.1s;
+            letter-spacing: 3px;
+            transition: all 0.15s;
             position: relative;
             overflow: hidden;
             transform: translateY(0);
             touch-action: manipulation;
-            font-family: 'Noto Sans JP', sans-serif;
-            box-shadow: 0 4px 8px rgba(42, 52, 57, 0.2);
+            font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            box-shadow: 0 4px 10px rgba(42, 52, 57, 0.3);
+            -webkit-tap-highlight-color: transparent;
+            font-weight: 700;
+            text-transform: uppercase;
+            writing-mode: horizontal-tb;
         }
         
         .click-button:hover {
             background: linear-gradient(to bottom, #e0d6b8, #c4b494);
-            box-shadow: 0 6px 12px rgba(42, 52, 57, 0.3);
+            box-shadow: 0 6px 15px rgba(42, 52, 57, 0.4);
         }
         
         .click-button:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 4px rgba(42, 52, 57, 0.3);
+            transform: translateY(3px);
+            box-shadow: 0 2px 5px rgba(42, 52, 57, 0.4);
+        }
+        
+        .click-button::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background: #2a3439;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        
+        .click-button:hover::after {
+            transform: scaleX(1);
         }
         
         .mount-fuji {
@@ -83,12 +105,13 @@
             bottom: 30%;
             left: 50%;
             transform: translateX(-50%);
-            width: 200px;
-            height: 150px;
+            width: 220px;
+            height: 165px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 0 L100 100 L0 100 Z" fill="%23d4c8a6" stroke="%232a3439" stroke-width="0.5"/></svg>') no-repeat;
             background-size: contain;
             opacity: 0.7;
             z-index: 0;
+            filter: drop-shadow(0 2px 5px rgba(42, 52, 57, 0.2));
         }
         
         .sakura {
@@ -97,6 +120,7 @@
             background-size: contain;
             animation: falling linear infinite;
             z-index: 1;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
         }
         
         @keyframes falling {
@@ -110,28 +134,29 @@
             }
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Kosugi+Maru&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="wave-bg"></div>
     <div class="mount-fuji"></div>
     <div class="clicker">
         <div class="counter" id="clickCount">0</div>
-        <button class="click-button" id="clickButton">クリック</button>
+        <button class="click-button" id="clickButton">НАЖИМАЮ</button>
     </div>
 
     <script>
         // Создаём падающие лепестки сакуры
         function createSakura() {
-            const count = 15;
+            const count = 18;
             for (let i = 0; i < count; i++) {
                 const petal = document.createElement('div');
                 petal.className = 'sakura';
-                petal.style.width = `${Math.random() * 20 + 10}px`;
+                petal.style.width = `${Math.random() * 24 + 12}px`;
                 petal.style.height = petal.style.width;
                 petal.style.left = `${Math.random() * 100}%`;
-                petal.style.animationDuration = `${Math.random() * 10 + 10}s`;
-                petal.style.animationDelay = `${Math.random() * 5}s`;
+                petal.style.animationDuration = `${Math.random() * 12 + 8}s`;
+                petal.style.animationDelay = `${Math.random() * 6}s`;
+                petal.style.opacity = `${Math.random() * 0.7 + 0.3}`;
                 document.body.appendChild(petal);
             }
         }
@@ -147,19 +172,26 @@
         
         // Загрузка сохранённых данных
         function loadCounter() {
-            tg.CloudStorage.getItem('clickCount', (error, savedValue) => {
-                if (!error && savedValue !== null) {
-                    clickCounter = parseInt(savedValue) || 0;
-                }
-                updateCounterDisplay();
+            if (tg && tg.CloudStorage) {
+                tg.CloudStorage.getItem('clickCount', (error, savedValue) => {
+                    if (!error && savedValue !== null) {
+                        clickCounter = parseInt(savedValue) || 0;
+                    }
+                    updateCounterDisplay();
+                    isDataLoaded = true;
+                });
+            } else {
+                // Для тестирования вне Telegram
+                const saved = localStorage.getItem('clickCount');
+                if (saved) clickCounter = parseInt(saved);
                 isDataLoaded = true;
-            });
+                updateCounterDisplay();
+            }
         }
         loadCounter();
 
-        // Обработчик клика
-        const clickButton = document.getElementById('clickButton');
-        clickButton.addEventListener('click', () => {
+        // Универсальная функция обработки клика
+        function handleClick() {
             if (!isDataLoaded) return;
             
             clickCounter++;
@@ -167,22 +199,63 @@
             saveCounter();
             
             // Эффект при клике
-            clickButton.style.boxShadow = '0 2px 4px rgba(42, 52, 57, 0.5)';
+            const btn = document.getElementById('clickButton');
+            btn.style.transform = 'translateY(3px)';
+            btn.style.boxShadow = '0 2px 5px rgba(42, 52, 57, 0.4)';
+            
             setTimeout(() => {
-                clickButton.style.boxShadow = '0 4px 8px rgba(42, 52, 57, 0.2)';
-            }, 200);
-        });
+                btn.style.transform = 'translateY(0)';
+                btn.style.boxShadow = '0 4px 10px rgba(42, 52, 57, 0.3)';
+            }, 150);
+            
+            // Создаём эффект всплеска
+            createRippleEffect();
+        }
 
-        // Предотвращаем залипание кнопки на мобильных устройствах
-        clickButton.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            clickButton.classList.add('active');
-        }, {passive: false});
+        function createRippleEffect() {
+            const ripple = document.createElement('div');
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.width = '10px';
+            ripple.style.height = '10px';
+            ripple.style.background = 'rgba(42, 52, 57, 0.3)';
+            ripple.style.pointerEvents = 'none';
+            ripple.style.transform = 'translate(-50%, -50%)';
+            
+            const btn = document.getElementById('clickButton');
+            const rect = btn.getBoundingClientRect();
+            const x = rect.left + rect.width/2;
+            const y = rect.top + rect.height/2;
+            
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            
+            document.body.appendChild(ripple);
+            
+            const animation = ripple.animate([
+                { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                { transform: 'translate(-50%, -50%) scale(15)', opacity: 0 }
+            ], {
+                duration: 600,
+                easing: 'cubic-bezier(0, 0.2, 0.8, 1)'
+            });
+            
+            animation.onfinish = () => ripple.remove();
+        }
 
-        clickButton.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            clickButton.classList.remove('active');
-        }, {passive: false});
+        // Добавляем обработчики для всех типов устройств
+        const clickButton = document.getElementById('clickButton');
+        clickButton.addEventListener('click', handleClick);
+        clickButton.addEventListener('touchstart', handleClick, {passive: true});
+        
+        // Улучшаем отзывчивость на мобильных устройствах
+        clickButton.addEventListener('touchstart', function(e) {
+            this.classList.add('active');
+        }, {passive: true});
+        
+        clickButton.addEventListener('touchend', function() {
+            this.classList.remove('active');
+        }, {passive: true});
 
         // Обновление отображения счётчика
         function updateCounterDisplay() {
@@ -191,9 +264,14 @@
 
         // Сохранение счётчика
         function saveCounter() {
-            tg.CloudStorage.setItem('clickCount', clickCounter.toString(), (error) => {
-                if (error) console.error("Ошибка сохранения:", error);
-            });
+            if (tg && tg.CloudStorage) {
+                tg.CloudStorage.setItem('clickCount', clickCounter.toString(), (error) => {
+                    if (error) console.error("Ошибка сохранения:", error);
+                });
+            } else {
+                // Для тестирования вне Telegram
+                localStorage.setItem('clickCount', clickCounter.toString());
+            }
         }
     </script>
 </body>
