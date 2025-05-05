@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Минималистичный Кликер</title>
+    <title>Звёздный Кликер</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -13,35 +13,110 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Arial', sans-serif;
+            background-color: #000;
+            color: #ffe81f;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(0, 40, 100, 0.8) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(100, 0, 40, 0.8) 0%, transparent 30%);
+            overflow: hidden;
         }
+        
         .clicker {
             text-align: center;
+            position: relative;
+            z-index: 2;
         }
+        
         .counter {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #333;
+            font-size: 60px;
+            margin-bottom: 30px;
+            font-family: 'Arial Black', sans-serif;
+            text-shadow: 0 0 10px #ffe81f, 0 0 20px #ff5e00;
+            letter-spacing: 2px;
         }
+        
         .click-button {
-            padding: 15px 30px;
-            font-size: 18px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
+            padding: 15px 40px;
+            font-size: 20px;
+            background: linear-gradient(to bottom, #333, #111);
+            color: #ffe81f;
+            border: 2px solid #ffe81f;
+            border-radius: 0;
             cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .click-button:hover {
+            background: linear-gradient(to bottom, #444, #222);
+            box-shadow: 0 0 15px #ffe81f;
+        }
+        
+        .click-button:active {
+            transform: translateY(2px);
+        }
+        
+        .click-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 45%,
+                rgba(255, 232, 31, 0.3) 50%,
+                transparent 55%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
         }
     </style>
 </head>
 <body>
     <div class="clicker">
         <div class="counter" id="clickCount">0</div>
-        <button class="click-button" id="clickButton">Кликнуть</button>
+        <button class="click-button" id="clickButton">КЛИКНУТЬ</button>
     </div>
 
     <script>
+        // Создаём звёзды на фоне
+        function createStars() {
+            const count = 100;
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = `${Math.random() * 3 + 1}px`;
+                star.style.height = star.style.width;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.setProperty('--duration', `${Math.random() * 5 + 3}s`);
+                document.body.appendChild(star);
+            }
+        }
+        
         const tg = window.Telegram.WebApp;
         let clickCounter = 0;
         let isDataLoaded = false;
@@ -49,6 +124,7 @@
         // Инициализация
         tg.ready();
         tg.expand();
+        createStars();
         
         // Загрузка сохранённых данных
         function loadCounter() {
@@ -69,6 +145,13 @@
             clickCounter++;
             updateCounterDisplay();
             saveCounter();
+            
+            // Эффект при клике
+            const btn = document.getElementById('clickButton');
+            btn.style.boxShadow = '0 0 25px #ffe81f';
+            setTimeout(() => {
+                btn.style.boxShadow = 'none';
+            }, 200);
         });
 
         // Обновление отображения счётчика
